@@ -3,7 +3,18 @@ const morgan = require('morgan');
 
 const app = express();
 app.use(express.json());
-app.use(morgan('tiny'));
+
+// add the request body to the log, if the request method is POST
+morgan.token('req-body', (req, res) => {
+  if (req.method === 'POST') {
+    return JSON.stringify(req.body);
+  }
+
+  return '';
+});
+
+// app.use(morgan('tiny'));
+app.use(morgan(':method :url :status :res[content-length] - :response-time ms :req-body'));
 
 let persons = [
   {
